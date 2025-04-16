@@ -17,6 +17,7 @@ jobs:
     name: Build wheels for ${{ matrix.os }}
     runs-on: ${{ matrix.runs-on }}
     strategy:
+      fail-fast: false
       matrix:
         # ios, 
         os: [ linux-intel, linux-arm, windows, macos-intel, macos-arm, pyodide ]
@@ -55,6 +56,7 @@ jobs:
         env:
           CIBW_PLATFORM: ${{ matrix.platform }}
           CIBW_ARCHS: ${{ matrix.archs }}
+          CIBW_BEFORE_BUILD_PYODIDE: pyodide build --build-dependencies
 
       - uses: actions/upload-artifact@v4
         with:
