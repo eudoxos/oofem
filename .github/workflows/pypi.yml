@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        os: [ linux-intel, linux-arm, windows, macOS-intel, macOS-arm, iOS, pyodide ]
+        os: [ linux-intel, linux-arm, windows, macos-intel, macos-arm, ios, pyodide ]
         include:
           - archs: auto
             platform: auto
