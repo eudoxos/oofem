@@ -56,6 +56,7 @@ jobs:
         env:
           CIBW_PLATFORM: ${{ matrix.platform }}
           CIBW_ARCHS: ${{ matrix.archs }}
+          CIBW_BEFORE_BUILD_PYODIDE: python -m pip install py-build-cmake
 
       - uses: actions/upload-artifact@v4
         with:
