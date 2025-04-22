@@ -31,6 +31,10 @@ notshared:
 	cmake -Bbuild -H. -GNinja -DCMAKE_BUILD_TYPE=Release -DUSE_PYBIND_BINDINGS=1 -DUSE_SHARED_LIB=0 -DUSE_OOFEM_EXE=1 -DUSE_SM=1 -DUSE_TM=1 -DUSE_MPM=1
 	ninja -C build/
 	ctest --test-dir build/ --parallel=16
+nanobind:
+	cmake -Bbuild-nanobind -H. -GNinja -DCMAKE_BUILD_TYPE=Release -DUSE_PYBIND_BINDINGS=1 -DUSE_NANOBIND=1 -DUSE_SHARED_LIB=0 -DUSE_OOFEM_EXE=1 -DUSE_SM=1 -DUSE_TM=1 -DUSE_MPM=1
+	ninja -C build-nanobind
+	ctest --test-dir build/ --parallel=16
 act-install:
 	#!/bin/bash
 	[ -f nektos-act ] || wget https://github.com/nektos/act/releases/download/v0.2.76/act_Linux_x86_64.tar.gz && tar xvfz act_Linux_x86_64.tar.gz act && mv ./act nektos-act && chmod a+x nektos-act

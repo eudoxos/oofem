@@ -159,6 +159,7 @@ option (USE_CEMHYD "Enable CemHyd support" OFF)
 option (USE_AM "Enable additive manufacturing module" OFF)
 option (USE_T3D "Enable T3D support" OFF)
 option (USE_PYBIND_BINDINGS "Enable Python Pybind11 bindings (OOFEM callable from Python and vice versa)." OFF)
+option (USE_NANOBIND "Use nanobind instead of pybind; requires USE_PYBIND_BINDINGS" OFF)
 option (USE_PYTHON_EXTENSION "Enable Python extension for exposing C++ code to python. Uses Python.h library." OFF)
 option (USE_HDF5 "HDF5 support" OFF)
 option (USE_MPM "Enable experimental multiphysics module" OFF)
@@ -634,24 +635,38 @@ else()
     set(PYTHON_MODULE_EXTENSION ".so")
 endif()
 
+if(USE_NANOBIND AND NOT USE_PYBIND_BINDINGS)
+    MESSAGE(FATAL_ERROR "USE_NANOBIND requires simultaneous USE_PYBIND_BINDINGS")
+endif()
 
 if (USE_PYBIND_BINDINGS)
-    # workaround for emscripten: https://github.com/pyodide/pyodide/issues/5054
-    set(PYBIND11_FINDPYTHON ON)
-
-    find_package(Python COMPONENTS Interpreter Development)
-    if (PYBIND_DIR)
-        message(STATUS "PYBIND_DIR = ${PYBIND_DIR}")
-        include_directories (${PYBIND_DIR}) # need also to manually set it up since it can be anywhere
-        add_git_submodule(${PYBIND_DIR})
+    if(USE_NANOBIND)
+        add_subdirectory(extern/nanobind)
+        find_package(Python COMPONENTS Interpreter Development)
+        link_libraries(Python::Python)
+        nanobind_add_module(oofempy NB_STATIC STABLE_ABI LTO ${oofem_SOURCE_DIR}/bindings/python/oofem.cpp)
+        add_definitions(-D_USE_NANOBIND)
+        include_directories(${oofem_SOURCE_DIR}/extern/nanobind/include)
     else()
-        add_git_submodule(extern/pybind11)
-    endif ()
+        # workaround for emscripten: https://github.com/pyodide/pyodide/issues/5054
+        set(PYBIND11_FINDPYTHON ON)
 
-    # use python include paths and libs for all future targets (liboofem and oofem binary)
-    link_libraries(pybind11::embed)
+        find_package(Python COMPONENTS Interpreter Development)
+        if (PYBIND_DIR)
+            message(STATUS "PYBIND_DIR = ${PYBIND_DIR}")
+            include_directories (${PYBIND_DIR}) # need also to manually set it up since it can be anywhere
+            add_git_submodule(${PYBIND_DIR})
+        else()
+            add_git_submodule(extern/pybind11)
+        endif ()
 
-    pybind11_add_module(oofempy THIN_LTO ${oofem_SOURCE_DIR}/bindings/python/oofem.cpp)
+        # use python include paths and libs for all future targets (liboofem and oofem binary)
+        link_libraries(pybind11::embed)
+
+        pybind11_add_module(oofempy THIN_LTO ${oofem_SOURCE_DIR}/bindings/python/oofem.cpp)
+    endif()
+
+
     if(USE_SHARED_LIB)
         if(EMSCRIPTEN)
             MESSAGE(FATAL_ERROR "USE_SHARED_LIB=1 is incompatible with Emscripten (some unresolved symbols at runtime).")
