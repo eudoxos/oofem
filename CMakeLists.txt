@@ -639,7 +639,9 @@ if(USE_NANOBIND AND NOT USE_PYBIND_BINDINGS)
     MESSAGE(FATAL_ERROR "USE_NANOBIND requires simultaneous USE_PYBIND_BINDINGS")
 endif()
 
+<<<<<<< HEAD
 if (USE_PYBIND_BINDINGS)
+    add_definitions(-D_PYBIND_BINDINGS)
     if(USE_NANOBIND)
         add_subdirectory(extern/nanobind)
         find_package(Python COMPONENTS Interpreter Development)
@@ -659,14 +661,10 @@ if (USE_PYBIND_BINDINGS)
         else()
             add_git_submodule(extern/pybind11)
         endif ()
-
         # use python include paths and libs for all future targets (liboofem and oofem binary)
         link_libraries(pybind11::embed)
-
         pybind11_add_module(oofempy THIN_LTO ${oofem_SOURCE_DIR}/bindings/python/oofem.cpp)
     endif()
-
-
     if(USE_SHARED_LIB)
         if(EMSCRIPTEN)
             MESSAGE(FATAL_ERROR "USE_SHARED_LIB=1 is incompatible with Emscripten (some unresolved symbols at runtime).")
@@ -676,9 +674,8 @@ if (USE_PYBIND_BINDINGS)
         set_target_properties(oofempy PROPERTIES BUILD_RPATH ".") # look for liboofem.so in the build directory (before installation, for tests)
     else()
         target_sources(oofempy PRIVATE ${LIBS} ${EXT_LIBS})
-        add_dependencies(oofempy version)
     endif()
-    # set_target_properties (oofempy PROPERTIES SUFFIX "${PYTHON_MODULE_EXTENSION}")
+    # building wheel
     if(PY_BUILD_CMAKE_IMPORT_NAME)
         install(TARGETS oofempy DESTINATION ${PY_BUILD_CMAKE_IMPORT_NAME} COMPONENT python_module)
     endif()
@@ -692,8 +689,12 @@ if (USE_PYBIND_BINDINGS)
         endif()
         set(PYBIND11_PYTEST_FOUND TRUE CACHE INTERNAL "")
     endif()
-    add_definitions(-D_PYBIND_BINDINGS)
 endif()
+
+
+if(USE_PYTHON_EXTENSION)
+    add_definitions(-D_PYTHON_EXTENSION)
+endif ()
 
 #######################################################################
 ######################## Configuration ################################
