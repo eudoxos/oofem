@@ -36,6 +36,8 @@ act-install:
 	[ -f nektos-act ] || wget https://github.com/nektos/act/releases/download/v0.2.76/act_Linux_x86_64.tar.gz && tar xvfz act_Linux_x86_64.tar.gz act && mv ./act nektos-act && chmod a+x nektos-act
 act-linux:
 	./nektos-act -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-24.04 --workflows ./.github/workflows/linux.yml
+act-full:
+	./nektos-act --reuse -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-24.04 --workflows ./.github/workflows/full.yml
 act-python:
 	./nektos-act --reuse -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-24.04 --workflows ./.github/workflows/python.yml
 act-cibuildwheel:
