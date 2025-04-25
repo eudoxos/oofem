@@ -46,7 +46,7 @@ jobs:
     - name: Build
       run: cmake --build ./build
     - name: Test
-      run: ctest --test-dir ./build --rerun-failed --output-on-failure --parallel
+      run: ctest --test-dir ./build --timeout 20 --output-on-failure --parallel
     # TODO: build full docs as well
     # - name: Docs
     #  run: |
