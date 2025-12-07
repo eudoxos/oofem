@@ -94,7 +94,7 @@ public:
     double giveTimeIncrement() { return this->deltaT; }
     /// Returns e-model attributes.
     InputRecord &giveAttributesRecord() { return *this->attributes; }
-    void updateAttributesRecord(InputRecord &ir) { this->attributes = ir.clone(); };
+    void updateAttributesRecord(const std::shared_ptr<InputRecord>& ir) { this->attributes = ir; };
     /**
      * Instanciates the receiver from input record.
      */

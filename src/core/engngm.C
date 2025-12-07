@@ -198,7 +198,7 @@ EngngModel :: Instanciate_init()
 
 int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const char *dataOutputFileName, const char *desc)
 {
-    std::shared_ptr<InputRecord> irPtr(ir.clone());
+    std::shared_ptr<InputRecord> irPtr(ir.ptr());
     Timer timer;
     timer.startTimer();
 
@@ -274,7 +274,7 @@ int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const cha
         if ( inputReaderFinish ) {
             irPtr->finish();
         } else {
-            this->metaStepList.at(0).updateAttributesRecord(*irPtr);
+            this->metaStepList.at(0).updateAttributesRecord(irPtr->ptr());
         }
     } catch ( InputException &e ) {
         OOFEM_ERROR("Error initializing from user input: %s\n", e.what());
