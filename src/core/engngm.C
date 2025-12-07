@@ -234,6 +234,8 @@ int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const cha
             inputReaderFinish = false;
             this->instanciateDefaultMetaStep(*irPtr);
         } else {
+            // records for metasteps are under this one (no-op for text reader)
+            DataReader::RecordGuard guard(dr,&ir);
             this->instanciateMetaSteps(dr);
         }
 
@@ -302,8 +304,10 @@ EngngModel :: initializeFrom(InputRecord &ir)
     IR_GIVE_OPTIONAL_FIELD(ir, renumberFlag, _IFT_EngngModel_renumberFlag);
     profileOpt = false;
     IR_GIVE_OPTIONAL_FIELD(ir, profileOpt, _IFT_EngngModel_profileOpt);
-    nMetaSteps   = 0;
-    IR_GIVE_OPTIONAL_FIELD(ir, nMetaSteps, _IFT_EngngModel_nmsteps);
+
+    // get explicit nmsteps param (text), or size of the <Metasteps> sub-group (xml)
+    nMetaSteps = ir.giveReader()->giveGroupRecords(ir.ptr(),_IFT_EngngModel_nmsteps,"Metasteps",DataReader::IR_mstepRec,/*optional*/true).size();
+
     int _val = 1;
     IR_GIVE_OPTIONAL_FIELD(ir, _val, _IFT_EngngModel_nonLinFormulation);
     nonLinFormulation = ( fMode ) _val;
@@ -383,9 +387,11 @@ EngngModel :: instanciateMetaSteps(DataReader &dr)
     }
 
     // read problem domains
-    for ( int i = 1; i <= this->nMetaSteps; i++ ) {
-        auto &ir = dr.giveInputRecord(DataReader :: IR_mstepRec, i);
-        metaStepList[i-1].initializeFrom(ir);
+    auto mrecs=dr.giveGroupRecords("Metasteps",DataReader::IR_mstepRec,nMetaSteps);
+    int i=0;
+    for(InputRecord& mrec: mrecs){
+
+        metaStepList[i++].initializeFrom(mrec);
     }
 
     this->numberOfSteps = metaStepList.size();
