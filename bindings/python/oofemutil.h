@@ -161,7 +161,6 @@ std::shared_ptr<oofem::OOFEMTXTInputRecord> makeOutputManagerOOFEMTXTInputRecord
 * EngngModel
 *****************************************************/
 
-#define _TR std::cerr<<__FILE__<<":"<<__LINE__<<std::endl;
 py::object createEngngModelOfType(const char* type, py::args args, py::kwargs kw)
 {
     //args
@@ -169,37 +168,30 @@ py::object createEngngModelOfType(const char* type, py::args args, py::kwargs kw
     oofem::EngngModel* master = len(args)>1? PY_CAST(oofem::EngngModel *,args[1]) : nullptr;
     std::unique_ptr<EngngModel> engngm = classFactory.createEngngModel(type,number,master);
     if ( !engngm ) { OOFEM_RAISE("engngModel: wrong input data"); }
-	 _TR;
-    std::shared_ptr<oofem::OOFEMTXTInputRecord> irPtr = makeOOFEMTXTInputRecordFrom(kw);
-	 oofem::OOFEMTXTInputRecord& ir(*irPtr);
+    std::shared_ptr<oofem::OOFEMTXTInputRecord> ir = makeOOFEMTXTInputRecordFrom(kw);
     // instanciateYourself
-	 _TR;
     ///@todo Output filename isn't stored like this (and has never been!)!?
     std::string outFile;
-    if ( ir.hasField("outfile") ) {
-        ir.giveField(outFile, "outfile");
+    if ( ir->hasField("outfile") ) {
+        ir->giveField(outFile, "outfile");
     } else {
         outFile = "oofem.out.XXXXXX";
     }
     
-	 _TR;
     //engngm->Instanciate_init(outFile.c_str(), engngm->giveNumberOfDomains());
     engngm->letOutputBaseFileNameBe(outFile);
-    engngm->initializeFrom(ir);
+    engngm->initializeFrom(*ir);
 
-	 _TR;
-    if ( ir.hasField(_IFT_EngngModel_nmsteps) ) {
+    if ( ir->hasField(_IFT_EngngModel_nmsteps) ) {
         OOFEM_RAISE("engngModel: simulation with metasteps is not (yet) supported in Python");
     } else {
-        engngm->instanciateDefaultMetaStep(ir);
+        engngm->instanciateDefaultMetaStep(*ir);
         //engngm->giveTimeStepController()->instanciateDefaultMetaStep(ir);
     }
 
-	 _TR;
     engngm->Instanciate_init();
     //
     py::object ret = py::cast(engngm.release());
-	 _TR;
     /* ????????????????????
     // sets the last created engngModel as default one for further script
     temp_global["defaultEngngModel"] = ret;
