@@ -654,10 +654,14 @@ public:
     virtual void initializeFrom(InputRecord &ir);
     /// Instanciate problem domains by calling their instanciateYourself() service
     int instanciateDomains(DataReader &dr);
-    /// Instanciate problem meta steps by calling their instanciateYourself() service
-    int instanciateMetaSteps(DataReader &dr);
-    /// Instanciate default metastep, if nmsteps is zero
-    virtual int instanciateDefaultMetaStep(InputRecord &ir);
+
+    // FIXME: these methods were moved to timestepController and are only called form the python wrapper  (duplicate code)
+    #if 1
+        /// Instanciate problem meta steps by calling their instanciateYourself() service
+        int instanciateMetaSteps(DataReader &dr);
+        /// Instanciate default metastep, if nmsteps is zero
+        virtual int instanciateDefaultMetaStep(InputRecord &ir);
+    #endif
 
     /**
      * Update receiver attributes according to step metaStep attributes.

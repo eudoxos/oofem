@@ -235,11 +235,11 @@ int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const cha
         timeStepController->initializeFrom( ir );
         if ( timeStepController->giveNumberOfMetaSteps() == 0 ) {
             inputReaderFinish = false;
-            this->instanciateDefaultMetaStep(*irPtr);
+            timeStepController->instanciateDefaultMetaStep( ir );
         } else {
             // records for metasteps are under this one (no-op for text reader)
             DataReader::RecordGuard guard(dr,&ir);
-            this->instanciateMetaSteps(dr);
+            timeStepController->instanciateMetaSteps( dr );
         }
 
         {
@@ -270,7 +270,7 @@ int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const cha
 
         if ( this->nMetaSteps == 0 ) {
             inputReaderFinish = false;
-            this->instanciateDefaultMetaStep(*irPtr);
+            timeStepController->instanciateDefaultMetaStep(*irPtr);
         } 
 
         // check emodel input record if no default metastep, since all has been read
@@ -376,7 +376,7 @@ EngngModel :: instanciateDomains(DataReader &dr)
     return result;
 }
 
-
+#if 1
 int
 EngngModel :: instanciateMetaSteps(DataReader &dr)
 {
@@ -416,6 +416,7 @@ EngngModel :: instanciateDefaultMetaStep(InputRecord &ir)
 
     return 1;
 }
+#endif
 
 #ifdef __MPM_MODULE
 int 
