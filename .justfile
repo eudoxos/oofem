@@ -77,11 +77,20 @@ act-cibuildwheel:
 	.cache/nektos-act --reuse -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-24.04 --workflows ./.github/workflows/cibuildhweel.yml
 msvc:
 	#!/bin/bash
-	[ -d /opt/msvc ] || ( git clone https://github.com/mstorsjo/msvc-wine.git && cd msvc-wine && ./vsdownload.py --accept-license --dest /opt/msvc && ./install.sh /opt/msvc )
-	export PATH=/opt/msvc/bin/x64:$PATH
-	rm -rf build-msvc
-	cmake -Bbuild-msvc -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
+	# setup based on https://github.com/mstorsjo/msvc-wine?tab=readme-ov-file#use-with-clanglld-in-msvc-mode
+	[ -d /opt/msvc ] || ( git clone https://github.com/mstorsjo/msvc-wine.git .cache/msvc-wine && cd .cache/msvc-wine && ./vsdownload.py --accept-license --dest /opt/msvc && ./install.sh /opt/msvc )
+	[ -f /usr/bin/clang-cl-20 ] || ( echo "You need to install clang >= 19 (packages e.g. clang-20 llvm-20"; exit 1)
+	BIN=/opt/msvc/bin/x64 . .cache/msvc-wine/msvcenv-native.sh
+	cmake -Bbuild-msvc -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=clang-cl-20  -DCMAKE_CXX_COMPILER=clang-cl-20 -DCMAKE_RC_COMPILER=llvm-rc-20 -DCMAKE_LINKER_TYPE=LLD -DCMAKE_MT=llvm-mt-20
 	cmake --build ./build-msvc --parallel
+	[ -f /proc/sys/fs/binfmt_misc/wine ] || ( echo "You don't seem to have wine-binfmt installed or enabled, tests won't run."; exit 1)
+	ctest --test-dir build-eigen/ --parallel 16 --output-on-failure
+clang:
+	mkdir -p build-clang
+	cmake -Bbuild-clang -H. -DUSE_LAPACK=0 -DUSE_EIGEN=1 -DUSE_OPENMP_PARALLEL=0 {{FAIRLY_COMPLETE_FLAGS}} -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+	ninja -C build-clang/
+	ctest --test-dir build-clang/ --parallel 16 --output-on-failure
+
 pytest:
 	#!/bin/bash
 	PYTHONPATH=build:bindings/python python -m pytest bindings/python/tests
