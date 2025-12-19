@@ -36,18 +36,18 @@
 
 namespace oofem {
 
-InputRecord :: InputRecord(DataReader* r){
+InputRecord_ :: InputRecord_(DataReader* r){
     reader = r;
 }
 
 DataReader*
-InputRecord :: giveReader() const {
+InputRecord_ :: giveReader() const {
     return reader;
 }
 
 
 void
-InputRecord :: giveOptionalField(int &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(int &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -57,7 +57,7 @@ InputRecord :: giveOptionalField(int &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(double &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(double &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -67,7 +67,7 @@ InputRecord :: giveOptionalField(double &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(bool &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(bool &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -77,7 +77,7 @@ InputRecord :: giveOptionalField(bool &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(std :: string &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(std :: string &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -87,7 +87,7 @@ InputRecord :: giveOptionalField(std :: string &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(FloatArray &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(FloatArray &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -97,7 +97,7 @@ InputRecord :: giveOptionalField(FloatArray &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(IntArray &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(IntArray &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -107,7 +107,7 @@ InputRecord :: giveOptionalField(IntArray &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -117,7 +117,7 @@ InputRecord :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(std :: vector< std :: string > &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(std :: vector< std :: string > &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -127,7 +127,7 @@ InputRecord :: giveOptionalField(std :: vector< std :: string > &answer, InputFi
 }
 
 void
-InputRecord :: giveOptionalField(Dictionary &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(Dictionary &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -137,7 +137,7 @@ InputRecord :: giveOptionalField(Dictionary &answer, InputFieldType id)
 }
 
 void
-InputRecord :: giveOptionalField(std :: list< Range > &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(std :: list< Range > &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -147,7 +147,7 @@ InputRecord :: giveOptionalField(std :: list< Range > &answer, InputFieldType id
 }
 
 void
-InputRecord :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
+InputRecord_ :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -158,8 +158,8 @@ InputRecord :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
 
 
 
-InputException::InputException(const InputRecord& ir, std::string keyword, int number) : 
-    record(ir.giveRecordAsString()), keyword(std::move(keyword)), number(number)
+InputException::InputException(const InputRecord& ir, std::string keyword, int number) :
+    record(ir->giveRecordAsString()), keyword(std::move(keyword)), number(number)
 { }
 
 
