@@ -103,8 +103,8 @@ int FieldManager::instanciateYourself(DataReader &dr, InputRecord &ir)
   IR_GIVE_OPTIONAL_FIELD (ir, externalFieldsCount, "nfields");
   // instantiate and initialize external fields
   for (int i = 1; i <= externalFieldsCount; i++) {
-    InputRecord &fieldRecord = dr.giveInputRecord(DataReader::IR_fieldRec, i);
-    fieldRecord.giveRecordKeywordField(fname);
+    InputRecord fieldRecord = dr.giveInputRecord(DataReader::IR_fieldRec, i);
+    fieldRecord->giveRecordKeywordField(fname);
 
     std :: shared_ptr< Field > fieldPtr = classFactory.createField(fname.c_str());
     if ( !fieldPtr ) {

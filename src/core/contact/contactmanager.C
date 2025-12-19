@@ -77,8 +77,8 @@ ContactManager :: instanciateYourself(DataReader &dr)
 
     // Create and instantiate contact definitions
     for ( int i = 1; i <= this->giveNumberOfContactDefinitions(); i++ ) {
-        auto &ir = dr.giveInputRecord(DataReader :: IR_contactDefRec, i);
-        ir.giveRecordKeywordField(name);
+        auto ir = dr.giveInputRecord(DataReader :: IR_contactDefRec, i);
+        ir->giveRecordKeywordField(name);
         this->contactDefinitionList[i-1] = classFactory.createContactDefinition( name.c_str(), this );
         if ( this->contactDefinitionList[i-1] ) {
             this->contactDefinitionList[i-1]->initializeFrom(ir);

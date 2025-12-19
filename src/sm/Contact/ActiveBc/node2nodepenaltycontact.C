@@ -56,7 +56,7 @@ Node2NodePenaltyContact :: initializeFrom(InputRecord &ir)
     ActiveBoundaryCondition :: initializeFrom(ir);
 
     IR_GIVE_FIELD(ir, this->penalty, _IFT_Node2NodePenaltyContact_penalty);
-    this->useTangent = ir.hasField(_IFT_Node2NodePenaltyContact_useTangent);
+    this->useTangent = ir->hasField(_IFT_Node2NodePenaltyContact_useTangent);
 
 
     IR_GIVE_FIELD(ir, this->masterSet, _IFT_Node2NodePenaltyContact_masterSet);

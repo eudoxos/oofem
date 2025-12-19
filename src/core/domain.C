@@ -479,7 +479,7 @@ void Domain :: clearBoundaryConditions() { bcList.clear(); }
 void Domain :: clearElements() { elementList.clear(); }
 
 int Domain::instanciateYourself(DataReader& dr){
-    auto &ir = dr.giveInputRecord(DataReader :: IR_domainRec, 1);
+    auto ir = dr.giveInputRecord(DataReader :: IR_domainRec, 1);
     return this->instanciateYourself(dr,ir);
 }
 int
@@ -509,26 +509,26 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
     // read output manager record
     {
         std :: string tmp;
-        auto &ir = dr.giveInputRecord(DataReader :: IR_outManRec, 1);
-        ir.giveRecordKeywordField(tmp);
+        auto ir = dr.giveInputRecord(DataReader :: IR_outManRec, 1);
+        ir->giveRecordKeywordField(tmp);
 
         if ( !giveEngngModel()->giveSuppressOutput() ) {
             outputManager->initializeFrom(ir);
         }
-        ir.finish();
+        ir->finish();
     }
 
     // XML format (and perhaps others) does not contain DomainComp nested group, rather nests everything under domain directly
-    std::shared_ptr<InputRecord> irdPtr(dr.hasFlattenedStructure()?irDomain.clone():dr.giveInputRecord(DataReader :: IR_domainCompRec, 1).clone());
-    IR_GIVE_OPTIONAL_FIELD(*irdPtr.get(), topologytype, _IFT_Domain_topology);
+    std::shared_ptr<InputRecord_> irdPtr(dr.hasFlattenedStructure()?irDomain:dr.giveInputRecord(DataReader :: IR_domainCompRec, 1));
+    IR_GIVE_OPTIONAL_FIELD(irdPtr, topologytype, _IFT_Domain_topology);
     this->nsd = -1; ///@todo Change this to default 0 when the domaintype record has been removed.
-    IR_GIVE_OPTIONAL_FIELD(*irdPtr.get(), this->nsd, _IFT_Domain_numberOfSpatialDimensions);
+    IR_GIVE_OPTIONAL_FIELD(irdPtr, this->nsd, _IFT_Domain_numberOfSpatialDimensions);
     this->axisymm = irdPtr->hasField(_IFT_Domain_axisymmetric);
 
 
     // read nodes
     DataReader::GroupRecords dofManagerRecs=dr.giveGroupRecords(irdPtr,_IFT_Domain_ndofman,"Nodes",DataReader::IR_dofmanRec,/*optional*/false);
-    DataReader::RecordGuard scope(dr,irdPtr.get()); // till the end of the scope
+    DataReader::RecordGuard scope(dr,irdPtr); // till the end of the scope
     dofManagerList.clear();
     dofManagerList.resize(dofManagerRecs.size());
     int dofManagerIndex0=0;
@@ -546,7 +546,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
         dman->setGlobalNumber(num);    // set label
         dofManagerList[dofManagerIndex0] = std :: move(dman);
 
-        ir.finish();
+        ir->finish();
         dofManagerIndex0++;
     }
 
@@ -574,7 +574,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
         elem->setGlobalNumber(num);
         elementList[elemIndex0] = std :: move(elem);
 
-        ir.finish();
+        ir->finish();
         elemIndex0++;
     }
 
@@ -585,7 +585,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
     if ( dr.peekNext("set") ) {
         DataReader::GroupRecords setRecs=dr.giveGroupRecords(irdPtr,_IFT_Domain_nset,"Sets",DataReader::IR_setRec,/*optional*/true);
         setList.resize(setRecs.size());
-        for(InputRecord& ir: setRecs){
+        for(InputRecord ir: setRecs){
             // read type of set
             IR_GIVE_RECORD_KEYWORD_FIELD(ir, name, num);
             // Only one set for now (i don't see any need to ever introduce any other version)
@@ -607,7 +607,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
                 OOFEM_ERROR("Set entry already exist (num=%d)", num);
             }
 
-            ir.finish();
+            ir->finish();
         }
     }
     
@@ -640,7 +640,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("crossSection entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -673,7 +673,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("material entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -706,7 +706,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("barrier entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -741,7 +741,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("boundary condition entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -774,7 +774,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("initial condition entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -808,7 +808,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
             OOFEM_ERROR("Function entry already exist (num=%d)", num);
         }
 
-        ir.finish();
+        ir->finish();
     }
 
     #  ifdef VERBOSE
@@ -841,7 +841,7 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
                 OOFEM_ERROR("Set entry already exist (num=%d)", num);
             }
 
-            ir.finish();
+            ir->finish();
         }
     }
 
@@ -851,30 +851,30 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
         }
     #  endif
 
-    InputRecord* xfmIr=dr.giveChildRecord(irdPtr,_IFT_Domain_nxfemman,"XFEMManager",DataReader::IR_xfemManRec,/*optional*/true);
+    InputRecord xfmIr=dr.giveChildRecord(irdPtr,_IFT_Domain_nxfemman,"XFEMManager",DataReader::IR_xfemManRec,/*optional*/true);
     if(xfmIr){
-        IR_GIVE_RECORD_KEYWORD_FIELD(*xfmIr, name, num);
+        IR_GIVE_RECORD_KEYWORD_FIELD(xfmIr, name, num);
         xfemManager = classFactory.createXfemManager(name.c_str(), this);
         if ( !xfemManager ) {
             OOFEM_ERROR("Couldn't create xfemmanager: %s", name.c_str());
         }
 
-        xfemManager->initializeFrom(*xfmIr);
+        xfemManager->initializeFrom(xfmIr);
         xfemManager->instanciateYourself(dr);
         #  ifdef VERBOSE
             VERBOSE_PRINT0("Instantiated xfem ", 1);
         #  endif
     }
 
-    InputRecord* cmanIr=dr.giveChildRecord(irdPtr,_IFT_Domain_ncontactman,"ContactManager",DataReader::IR_contactManRec,/*optional*/true);
+    InputRecord cmanIr=dr.giveChildRecord(irdPtr,_IFT_Domain_ncontactman,"ContactManager",DataReader::IR_contactManRec,/*optional*/true);
     if (cmanIr) {
-        IR_GIVE_RECORD_KEYWORD_FIELD(*cmanIr, name, num);
+        IR_GIVE_RECORD_KEYWORD_FIELD(cmanIr, name, num);
         contactManager = classFactory.createContactManager(name.c_str(), this);
         if ( !contactManager ) {
             OOFEM_ERROR("Couldn't create contact manager: %s", name.c_str());
         }
 
-        contactManager->initializeFrom(*cmanIr);
+        contactManager->initializeFrom(cmanIr);
         contactManager->instanciateYourself(dr);
         #  ifdef VERBOSE
             VERBOSE_PRINT0("Instantiated contact manager ", 1);
@@ -895,10 +895,10 @@ Domain :: instanciateYourself(DataReader &dr, InputRecord& irDomain)
         #  endif
     }
 
-    InputRecord* fmanIr=dr.giveChildRecord(irdPtr,_IFT_Domain_nfracman,"FractureManager",DataReader::IR_fracManRec,/*optional*/true);
+    InputRecord fmanIr=dr.giveChildRecord(irdPtr,_IFT_Domain_nfracman,"FractureManager",DataReader::IR_fracManRec,/*optional*/true);
     if (fmanIr) {
         fracManager = std::make_unique<FractureManager>(this);
-        fracManager->initializeFrom(*fmanIr);
+        fracManager->initializeFrom(fmanIr);
         fracManager->instanciateYourself(dr);
         #  ifdef VERBOSE
             VERBOSE_PRINT0("Instantiated fracture manager ", 1);
@@ -981,7 +981,7 @@ Domain::initializeFinish() {
         Set *set = this->giveSet(i);
         std::string elemProps = set->giveElementProperties();
         if (!elemProps.empty()) {
-            OOFEMTXTInputRecord ir (-1, elemProps);
+            auto ir=std::make_shared<OOFEMTXTInputRecord>(-1,elemProps);
             for ( int ielem: set->giveElementList() ) {
                 Element *element = this->giveElement( ielem );
                 element->initializeFrom(ir, 1); // initialize with priority 1 (lower than component record priority)
@@ -989,7 +989,7 @@ Domain::initializeFinish() {
         }
         std::string dofmanProps = set->giveDofManProperties();
         if (!dofmanProps.empty()) {
-            OOFEMTXTInputRecord ir (-1, dofmanProps);
+            auto ir=std::make_shared<OOFEMTXTInputRecord>(-1,dofmanProps);
             for ( int idofman: set->giveNodeList() ) {
                 DofManager *dofman = this->giveDofManager( idofman );
                 dofman->initializeFrom(ir, 1); // initialize with priority 1 (lower than component record priority)

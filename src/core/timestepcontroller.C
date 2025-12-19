@@ -117,7 +117,7 @@ TimeStepController :: instanciateMetaSteps(DataReader &dr)
 
     // read problem domains
     for ( int i = 1; i <= this->numberOfMetaSteps; i++ ) {
-        auto &ir = dr.giveInputRecord(DataReader :: IR_mstepRec, i);
+        auto ir = dr.giveInputRecord(DataReader :: IR_mstepRec, i);
         metaStepList[i-1].initializeFrom(ir);
 	totalNumberOfSteps += metaStepList[i-1].giveNumberOfSteps();
     }

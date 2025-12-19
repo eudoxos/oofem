@@ -59,7 +59,7 @@ void
 Node2NodeLagrangianMultiplierContact :: initializeFrom(InputRecord &ir)
 {
     ActiveBoundaryCondition :: initializeFrom(ir);
-    this->useTangent = ir.hasField(_IFT_Node2NodeLagrangianMultiplierContact_useTangent);
+    this->useTangent = ir->hasField(_IFT_Node2NodeLagrangianMultiplierContact_useTangent);
     IR_GIVE_FIELD(ir, this->masterSet, _IFT_Node2NodeLagrangianMultiplierContact_masterSet);
     IR_GIVE_FIELD(ir, this->slaveSet, _IFT_Node2NodeLagrangianMultiplierContact_slaveSet);
 
