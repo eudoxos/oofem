@@ -93,7 +93,7 @@ protected:
 
 public:
     NodeErrorCheckingRule(const std :: string &line, double tol);
-    NodeErrorCheckingRule(InputRecord& ir, double tol);
+    NodeErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol);
     bool check(Domain *domain, TimeStep *tStep) override;
     bool getValue(double& value, Domain* domain, TimeStep *tStep) override;
     const char *giveClassName() const override { return "NodeErrorCheckingRule"; }
@@ -110,7 +110,7 @@ protected:
 
 public:
     ElementErrorCheckingRule(const std :: string &line, double tol);
-    ElementErrorCheckingRule(InputRecord& ir, double tol);
+    ElementErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol);
     bool check(Domain *domain, TimeStep *tStep) override;
     bool getValue(double& value, Domain* domain, TimeStep *tStep) override;
     const char *giveClassName() const override { return "ElementErrorCheckingRule"; }
@@ -160,7 +160,7 @@ protected:
 
 public:
     ReactionErrorCheckingRule(const std :: string &line, double tol);
-    ReactionErrorCheckingRule(InputRecord& ir, double tol);
+    ReactionErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol);
     bool check(Domain *domain, TimeStep *tStep) override;
     bool getValue(double& value, Domain* domain, TimeStep *tStep) override;
     const char *giveClassName() const override { return "ReactionErrorCheckingRule"; }
@@ -220,8 +220,8 @@ protected:
 
     void writeCheck(Domain *domain, TimeStep *tStep);
 
-    void readRulesFromTextFile(InputRecord& ir);
-    void readRulesFromRecords(DataReader& dr, InputRecord& ir);
+    void readRulesFromTextFile(const std::shared_ptr<InputRecord>& ir);
+    void readRulesFromRecords(DataReader& dr, const std::shared_ptr<InputRecord>& ir);
 public:
     ErrorCheckingExportModule(int n, EngngModel * e);
     ErrorCheckingExportModule(const ErrorCheckingExportModule &) = delete;
@@ -229,7 +229,7 @@ public:
 
     void initialize() override;
     void terminate() override;
-    void initializeFrom(InputRecord &ir) override;
+    void initializeFrom(const std::shared_ptr<InputRecord> &ir) override;
     void doOutput(TimeStep *tStep, bool forcedOutput = false) override;
 
     const char *giveClassName() const override { return "ErrorCheckingExportModule"; }

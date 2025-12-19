@@ -109,7 +109,7 @@ NodeErrorCheckingRule :: NodeErrorCheckingRule(const std :: string &line, double
     }
 }
 
-NodeErrorCheckingRule :: NodeErrorCheckingRule(InputRecord& ir, double tol): ErrorCheckingRule(tol){
+NodeErrorCheckingRule :: NodeErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol): ErrorCheckingRule(tol){
     std::string unknown;
     ir->giveField(tstep,"tStep");
     ir->giveOptionalField(tsubstep,"tStepVer");
@@ -298,7 +298,7 @@ ElementErrorCheckingRule :: ElementErrorCheckingRule(const std :: string &line, 
     ist = (InternalStateType)istnum;
 }
 
-ElementErrorCheckingRule :: ElementErrorCheckingRule(InputRecord& ir, double tol): ErrorCheckingRule(tol) {
+ElementErrorCheckingRule :: ElementErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol): ErrorCheckingRule(tol) {
     ir->giveField(tstep,"tStep");
     ir->giveOptionalField(tsubstep,"tStepVer");
     ir->giveField(number,"number");
@@ -527,7 +527,7 @@ ReactionErrorCheckingRule :: ReactionErrorCheckingRule(const std :: string &line
     }
 }
 
-ReactionErrorCheckingRule :: ReactionErrorCheckingRule(InputRecord& ir, double tol): ErrorCheckingRule(tol) {
+ReactionErrorCheckingRule :: ReactionErrorCheckingRule(const std::shared_ptr<InputRecord>& ir, double tol): ErrorCheckingRule(tol) {
     ir->giveField(tstep,"tStep");
     ir->giveOptionalField(tsubstep,"tStepVer");
     ir->giveField(number,"number");
@@ -729,7 +729,7 @@ ErrorCheckingExportModule :: ErrorCheckingExportModule(int n, EngngModel *e) : E
 }
 
 void
-ErrorCheckingExportModule :: initializeFrom(InputRecord &ir)
+ErrorCheckingExportModule :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     ExportModule :: initializeFrom(ir);
 
@@ -765,7 +765,7 @@ ErrorCheckingExportModule :: initializeFrom(InputRecord &ir)
     IR_GIVE_OPTIONAL_FIELD(ir, this->extractorMode, _IFT_ErrorCheckingExportModule_extractormode);
 }
 
-void ErrorCheckingExportModule::readRulesFromTextFile(InputRecord& ir){
+void ErrorCheckingExportModule::readRulesFromTextFile(const std::shared_ptr<InputRecord>& ir){
     // Reads all the rules;
     std :: ifstream inputStream(this->filename);
     if ( !inputStream ) {
@@ -783,7 +783,7 @@ void ErrorCheckingExportModule::readRulesFromTextFile(InputRecord& ir){
     }
 }
 
-void ErrorCheckingExportModule::readRulesFromRecords(DataReader& dr, InputRecord& ir){
+void ErrorCheckingExportModule::readRulesFromRecords(DataReader& dr, const std::shared_ptr<InputRecord>& ir){
     double tol=1e-6;
     ir->giveOptionalField(tol,"tolerance");
     DataReader::GroupRecords ruleRecs=dr.giveGroupRecords("",/*whatever*/DataReader::IR_elemRec,-1);

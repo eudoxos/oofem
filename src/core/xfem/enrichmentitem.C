@@ -81,7 +81,7 @@ EnrichmentItem :: ~EnrichmentItem()
 {
 }
 
-void EnrichmentItem :: initializeFrom(InputRecord &ir)
+void EnrichmentItem :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     mEnrFrontIndex = 0;
     IR_GIVE_OPTIONAL_FIELD(ir, mEnrFrontIndex, _IFT_EnrichmentItem_front);

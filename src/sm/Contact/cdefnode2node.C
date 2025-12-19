@@ -46,7 +46,7 @@ ContactDefinitionNode2Node :: ContactDefinitionNode2Node(ContactManager *cMan) :
     
 
 void
-ContactDefinitionNode2Node :: initializeFrom(InputRecord &ir)
+ContactDefinitionNode2Node :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     IntArray masterNodes;
     IntArray slaveNodes;
@@ -73,7 +73,7 @@ ContactDefinitionNode2NodeL :: ContactDefinitionNode2NodeL(ContactManager *cMan)
     
 
 void
-ContactDefinitionNode2NodeL :: initializeFrom(InputRecord &ir)
+ContactDefinitionNode2NodeL :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     IntArray masterNodes;
     IntArray slaveNodes;

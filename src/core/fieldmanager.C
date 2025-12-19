@@ -95,7 +95,7 @@ FieldManager :: giveRegisteredKeys()
 
 
 
-int FieldManager::instanciateYourself(DataReader &dr, InputRecord &ir)
+int FieldManager::instanciateYourself(DataReader &dr, const std::shared_ptr<InputRecord> &ir)
 {
   int externalFieldsCount = 0;
   std :: string fname;
@@ -103,7 +103,7 @@ int FieldManager::instanciateYourself(DataReader &dr, InputRecord &ir)
   IR_GIVE_OPTIONAL_FIELD (ir, externalFieldsCount, "nfields");
   // instantiate and initialize external fields
   for (int i = 1; i <= externalFieldsCount; i++) {
-    InputRecord fieldRecord = dr.giveInputRecord(DataReader::IR_fieldRec, i);
+    const std::shared_ptr<InputRecord> fieldRecord = dr.giveInputRecord(DataReader::IR_fieldRec, i);
     fieldRecord->giveRecordKeywordField(fname);
 
     std :: shared_ptr< Field > fieldPtr = classFactory.createField(fname.c_str());

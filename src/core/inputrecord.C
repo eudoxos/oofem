@@ -36,18 +36,18 @@
 
 namespace oofem {
 
-InputRecord_ :: InputRecord_(DataReader* r){
+InputRecord :: InputRecord(DataReader* r){
     reader = r;
 }
 
 DataReader*
-InputRecord_ :: giveReader() const {
+InputRecord :: giveReader() const {
     return reader;
 }
 
 
 void
-InputRecord_ :: giveOptionalField(int &answer, InputFieldType id)
+InputRecord :: giveOptionalField(int &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -57,7 +57,7 @@ InputRecord_ :: giveOptionalField(int &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(double &answer, InputFieldType id)
+InputRecord :: giveOptionalField(double &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -67,7 +67,7 @@ InputRecord_ :: giveOptionalField(double &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(bool &answer, InputFieldType id)
+InputRecord :: giveOptionalField(bool &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -77,7 +77,7 @@ InputRecord_ :: giveOptionalField(bool &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(std :: string &answer, InputFieldType id)
+InputRecord :: giveOptionalField(std :: string &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -87,7 +87,7 @@ InputRecord_ :: giveOptionalField(std :: string &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(FloatArray &answer, InputFieldType id)
+InputRecord :: giveOptionalField(FloatArray &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -97,7 +97,7 @@ InputRecord_ :: giveOptionalField(FloatArray &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(IntArray &answer, InputFieldType id)
+InputRecord :: giveOptionalField(IntArray &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -107,7 +107,7 @@ InputRecord_ :: giveOptionalField(IntArray &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
+InputRecord :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -117,7 +117,7 @@ InputRecord_ :: giveOptionalField(FloatMatrix &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(std :: vector< std :: string > &answer, InputFieldType id)
+InputRecord :: giveOptionalField(std :: vector< std :: string > &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -127,7 +127,7 @@ InputRecord_ :: giveOptionalField(std :: vector< std :: string > &answer, InputF
 }
 
 void
-InputRecord_ :: giveOptionalField(Dictionary &answer, InputFieldType id)
+InputRecord :: giveOptionalField(Dictionary &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -137,7 +137,7 @@ InputRecord_ :: giveOptionalField(Dictionary &answer, InputFieldType id)
 }
 
 void
-InputRecord_ :: giveOptionalField(std :: list< Range > &answer, InputFieldType id)
+InputRecord :: giveOptionalField(std :: list< Range > &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -147,7 +147,7 @@ InputRecord_ :: giveOptionalField(std :: list< Range > &answer, InputFieldType i
 }
 
 void
-InputRecord_ :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
+InputRecord :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
 {
     if ( this->hasField(id) ) {
         try {
@@ -158,12 +158,12 @@ InputRecord_ :: giveOptionalField(ScalarFunction &answer, InputFieldType id)
 
 
 
-InputException::InputException(const InputRecord& ir, std::string keyword, int number) :
+InputException::InputException(const std::shared_ptr<InputRecord>& ir, std::string keyword, int number) :
     record(ir->giveRecordAsString()), keyword(std::move(keyword)), number(number)
 { }
 
 
-MissingKeywordInputException::MissingKeywordInputException(const InputRecord& ir, std::string kw, int n) :
+MissingKeywordInputException::MissingKeywordInputException(const std::shared_ptr<InputRecord>& ir, std::string kw, int n) :
     InputException(ir, std::move(kw), n)
 {
     msg = "Missing keyword \"" + keyword + "\" on input " + std::to_string(number) + \
@@ -171,7 +171,7 @@ MissingKeywordInputException::MissingKeywordInputException(const InputRecord& ir
 }
 
 
-BadFormatInputException::BadFormatInputException(const InputRecord& ir, std::string kw, int n) :
+BadFormatInputException::BadFormatInputException(const std::shared_ptr<InputRecord>& ir, std::string kw, int n) :
     InputException(ir, std::move(kw), n)
 {
     msg = "Bad format for keyword \"" + keyword + "\" on input " + std::to_string(number) + \
@@ -179,7 +179,7 @@ BadFormatInputException::BadFormatInputException(const InputRecord& ir, std::str
 }
 
 
-ValueInputException::ValueInputException(const InputRecord& ir, std::string kw, const std::string &reason) :
+ValueInputException::ValueInputException(const std::shared_ptr<InputRecord>& ir, std::string kw, const std::string &reason) :
     InputException(ir, std::move(kw), -1)
 {
     msg = "Value input error for keyword \"" + keyword + "\"" + \

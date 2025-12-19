@@ -56,7 +56,7 @@ Node2NodeLagrangianMultiplierContact :: Node2NodeLagrangianMultiplierContact(int
 
 
 void
-Node2NodeLagrangianMultiplierContact :: initializeFrom(InputRecord &ir)
+Node2NodeLagrangianMultiplierContact :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     ActiveBoundaryCondition :: initializeFrom(ir);
     this->useTangent = ir->hasField(_IFT_Node2NodeLagrangianMultiplierContact_useTangent);

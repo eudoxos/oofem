@@ -348,7 +348,7 @@ void Delamination :: evaluateEnrFuncAt(std :: vector< double > &oEnrFunc, const 
 }
 
 
-void Delamination :: initializeFrom(InputRecord &ir)
+void Delamination :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     EnrichmentItem :: initializeFrom(ir);
 

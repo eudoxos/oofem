@@ -151,7 +151,7 @@ IntArray XfemManager :: giveEnrichedDofIDs(const DofManager &iDMan) const
     return dofIdArray;
 }
 
-void XfemManager :: initializeFrom(InputRecord &ir)
+void XfemManager :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     IR_GIVE_FIELD(ir, numberOfEnrichmentItems, _IFT_XfemManager_numberOfEnrichmentItems);
 

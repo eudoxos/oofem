@@ -53,7 +53,7 @@ ContactManager :: ~ContactManager()
 
 
 void
-ContactManager :: initializeFrom(InputRecord &ir)
+ContactManager :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     this->numberOfContactDefinitions = 0;
     IR_GIVE_FIELD(ir, this->numberOfContactDefinitions, _IFT_ContactManager_NumberOfContactDefinitions);

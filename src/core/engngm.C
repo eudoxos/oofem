@@ -198,9 +198,9 @@ EngngModel :: Instanciate_init()
 }
 
 
-int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const char *dataOutputFileName, const char *desc)
+int EngngModel :: instanciateYourself(DataReader &dr, const std::shared_ptr<InputRecord> &ir, const char *dataOutputFileName, const char *desc)
 {
-    // std::shared_ptr<InputRecord> irPtr(ir.ptr());
+    // std::shared_ptr<const std::shared_ptr<InputRecord>> irPtr(ir.ptr());
     Timer timer;
     timer.startTimer();
 
@@ -287,7 +287,7 @@ int EngngModel :: instanciateYourself(DataReader &dr, InputRecord &ir, const cha
 
 
 void
-EngngModel :: initializeFrom(InputRecord &ir)
+EngngModel :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     numberOfSteps = 1;
     IR_GIVE_OPTIONAL_FIELD( ir, numberOfSteps, _IFT_EngngModel_nsteps );
@@ -364,7 +364,7 @@ EngngModel :: instanciateDomains(DataReader &dr)
     // read problem domains
     auto Idomain=domainList.begin();
     auto drecs=dr.giveGroupRecords("Domains",DataReader::IR_domainRec,domainList.size());
-    for(InputRecord& drec: drecs){
+    for(const std::shared_ptr<InputRecord>& drec: drecs){
         result&=(*Idomain)->instanciateYourself(dr,drec);
         Idomain++;
     }
@@ -397,7 +397,7 @@ EngngModel :: instanciateMetaSteps(DataReader &dr)
 
 
 int
-EngngModel :: instanciateDefaultMetaStep(InputRecord &ir)
+EngngModel :: instanciateDefaultMetaStep(const std::shared_ptr<InputRecord> &ir)
 {
     if ( numberOfSteps == 0 ) {
         OOFEM_ERROR("nsteps cannot be zero");
@@ -414,7 +414,7 @@ EngngModel :: instanciateDefaultMetaStep(InputRecord &ir)
 
 #ifdef __MPM_MODULE
 int 
-EngngModel:: instanciateMPM (DataReader &dr, InputRecord &ir) {
+EngngModel:: instanciateMPM (DataReader &dr, const std::shared_ptr<InputRecord> &ir) {
     std::string name;
     int num=-1;
     DataReader::RecordGuard scope(dr,ir);

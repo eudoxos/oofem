@@ -51,7 +51,7 @@ REGISTER_BoundaryCondition(Node2NodePenaltyContact);
 
 
 void
-Node2NodePenaltyContact :: initializeFrom(InputRecord &ir)
+Node2NodePenaltyContact :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
     ActiveBoundaryCondition :: initializeFrom(ir);
 

@@ -82,7 +82,7 @@ public:
 
     virtual void createContactDofs();
 
-    virtual void initializeFrom(InputRecord &ir) { }
+    virtual void initializeFrom(const std::shared_ptr<InputRecord> &ir) { }
 
     virtual int instanciateYourself(DataReader &dr);
     virtual const char *giveClassName() const { return "ContactDefinition"; }

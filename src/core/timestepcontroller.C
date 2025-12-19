@@ -50,7 +50,7 @@ namespace oofem {
 
 
 void
-TimeStepController :: initializeFrom(InputRecord &ir)
+TimeStepController :: initializeFrom(const std::shared_ptr<InputRecord> &ir)
 {
 
   numberOfMetaSteps   = 0;
@@ -142,7 +142,7 @@ TimeStepController :: giveMetaStep(int i)
 
 
 int
-TimeStepController :: instanciateDefaultMetaStep(InputRecord &ir)
+TimeStepController :: instanciateDefaultMetaStep(const std::shared_ptr<InputRecord> &ir)
 {
 
   metaStepList.clear();

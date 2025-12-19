@@ -79,7 +79,7 @@ public:
     /// Destructor.
     virtual ~Node2NodeLagrangianMultiplierContact() {};
 
-    void initializeFrom(InputRecord &ir) override;
+    void initializeFrom(const std::shared_ptr<InputRecord> &ir) override;
 
     void assemble(SparseMtrx &answer, TimeStep *tStep,
                   CharType type, const UnknownNumberingScheme &r_s, const UnknownNumberingScheme &c_s, double scale = 1.0,
