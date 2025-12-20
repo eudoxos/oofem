@@ -39,6 +39,7 @@
 #include "dictionary.h"
 #include "range.h"
 #include "scalarfunction.h"
+#include "datareader.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -91,6 +92,11 @@ OOFEMTXTInputRecord :: operator = ( const OOFEMTXTInputRecord & src )
 }
 
 
+std :: string
+OOFEMTXTInputRecord::giveLocation() const {
+    return std::string(giveReader()?giveReader()->giveReferenceName():"<?reader_NULL?>")+":"+std::to_string(giveLineNumber());
+}
+
 int
 OOFEMTXTInputRecord :: giveGroupCount(InputFieldType id, const std::string& name, bool optional){
     int size=0;
@@ -102,7 +108,7 @@ OOFEMTXTInputRecord :: giveGroupCount(InputFieldType id, const std::string& name
 bool
 OOFEMTXTInputRecord :: hasChild(InputFieldType id, const std::string& name, bool optional){
     int count=this->giveGroupCount(id,name,optional);
-    if(count>1) OOFEM_ERROR("Number of '%s' children (%s) must be 0 or 1 (not %d)",id,name.c_str(),count);
+    if(count>1) OOFEM_ERROR("Number of '%s' children (%s) must be 0 or 1 (not %d)",name.c_str(),id,count);
     return count>0;
 }
 
@@ -680,18 +686,18 @@ OOFEMTXTInputRecord :: readMatrix(const char *helpSource, int r, int c, FloatMat
     }
 }
 
-#if _USE_TRACE_FIELDS
-void OOFEMTXTInputRecord::traceField(InputFieldType id, const char* type) {
-    if(!DataReader::TraceFields::active) return;
-    std::string tag;
-    /* synthetic tags for records which have no leading tag (only data) */
-    if(inputRecordType==DataReader::IR_outManRec) tag="~OutputManager~";
-    else if(inputRecordType==DataReader::IR_domainCompRec) tag="~DomainCompRec~";
-    else if(inputRecordType==DataReader::IR_mstepRec) tag="~MetaStep~";
-    else if(inputRecordType==DataReader::IR_unspecified) tag="?UNSPECIFIED?";
-    else this->giveRecordKeywordField(tag);
-    DataReader::TraceFields::write(tag+";"+id+";"+type);
-}
+#ifdef _USE_TRACE_FIELDS
+    void OOFEMTXTInputRecord::traceField(InputFieldType id, const char* type) {
+        if(!InputRecord::TraceFields::active) return;
+        std::string tag;
+        /* synthetic tags for records which have no leading tag (only data) */
+        if(inputRecordType==DataReader::IR_outManRec) tag="~OutputManager~";
+        else if(inputRecordType==DataReader::IR_domainCompRec) tag="~DomainCompRec~";
+        else if(inputRecordType==DataReader::IR_mstepRec) tag="~MetaStep~";
+        else if(inputRecordType==DataReader::IR_unspecified) tag="?UNSPECIFIED?";
+        else this->giveRecordKeywordField(tag);
+        InputRecord::TraceFields::write(tag+";"+id+";"+type);
+    }
 #endif
 
 } // end namespace oofem

@@ -67,19 +67,19 @@ public:
         IR_crosssectRec, IR_matRec, IR_nlocBarRec, IR_bcRec, IR_icRec, IR_funcRec, IR_setRec,
         IR_xfemManRec, IR_enrichFuncRec, IR_geoRec, IR_enrichItemRec,
         IR_enrichFrontRec, IR_propagationLawRec, IR_crackNucleationRec, IR_fracManRec, IR_failCritRec,
-        IR_contactManRec, IR_contactDefRec, IR_fieldRec, 
+        IR_contactSurfaceRec, IR_fieldRec, 
         // MPM specific
         IR_mpmVarRec, IR_mpmTermRec, IR_mpmIntegralRec,
         IR_unspecified // internal use only, signifies error in setting record type
     };
     /* XML tags corresponding to record types; those with "" are just enumeration group where arbitrary tags may be used */
     static constexpr const char* InputRecordTags[]={
-        /*Domain*/"","OutputManager","DomainComp","Geometry","GBPM",
-        "Analysis","MetaStep",/*ExportModule*/"","Node",/*Element*/"",
-        /*CrossSection*/"",/*Material*/"","NonlocalBarrier",/*BoundaryCondition*/"","InitialCondition",/*TimeFunction*/"","Set",
+        "Domain","OutputManager","DomainComp","Geometry","GBPM",
+        "Analysis","Metastep",/*ExportModule*/"",/*Node*/"",/*Element*/"",
+        /*CrossSection*/"",/*Material*/"",/*"NonlocalBarrier"*/"",/*BoundaryCondition*/"","InitialCondition",/*TimeFunction*/"","Set",
         "XFemManager","EnrichmentFunction","Geometry","EnrichmentItem",
         "EnrichmentFront","PropagationLaw","CrackNucleation","FractureManager","FailCriterion",
-        "ContactManager","ContactDefinition","Field",
+        "ContactSurface","Field",
         "MPMVariable",/*"MPMTerm"*/"","MPMIntegral",
         "UNSPECIFIED"
     };
@@ -193,16 +193,6 @@ public:
     /// Return pointer to subrecord of given type (must be exactly one); if not present, returns nullptr.
     std::shared_ptr<InputRecord> giveChildRecord( const std::shared_ptr<InputRecord> &ir, InputFieldType ift, const std::string &name, InputRecordType irType, bool optional );
 
-
-public:
-    #if _USE_TRACE_FIELDS
-        // field access tracing variables, set at startup from main()
-        struct TraceFields {
-            static bool active;
-            static std::ofstream out;
-            static void write(const std::string& s);
-        };
-    #endif
 
 };
 } // end namespace oofem

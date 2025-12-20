@@ -81,6 +81,8 @@ public:
     void setRecordString(std :: string newStr);
     /// Returns record string.
     std :: string giveRecordAsString() const override { return this->record; }
+    std :: string giveRecordInTXTFormat() const override { return this->record; }
+    std :: string giveLocation() const override;
 
     void finish(bool wrn = true) override;
 
@@ -136,9 +138,7 @@ protected:
     int readMatrix(const char *helpSource, int r, int c, FloatMatrix &ans);
 private:
     #ifdef _USE_TRACE_FIELDS
-        void traceField(InputFieldType id, const char* type);
-    #else
-        void traceField(InputFieldType id, const char* type) const { };
+        void traceField(InputFieldType id, const char* type) override;
     #endif
 };
 } // end namespace oofem
