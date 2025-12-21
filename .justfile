@@ -13,9 +13,10 @@ wheel-test:
 pyodide:
 	#!/bin/bash
 	set -e -x
+	rm -f dist/oofem-*_wasm32.whl
 	uv --version || $( curl -LsSf https://astral.sh/uv/install.sh | sh )
 	# create venv
-	uv venv --python 3.12 .cache/pyodide-venv
+	UV_VENV_CLEAR=1 uv venv --python 3.13 .cache/pyodide-venv
 	source .cache/pyodide-venv/bin/activate
 	# install pyodide-build and pip
 	uv pip install pyodide-build pip
@@ -31,9 +32,9 @@ pyodide:
 	pyodide build
 	# create & activate runtime venv (≠ pyodide-build venv)
 	[ -d build/venv-pyodide ] || pyodide venv build/venv-pyodide
+	deactivate
 	source build/venv-pyodide/bin/activate
 	pip install --force-reinstall dist/oofem-*-pyodide_*_wasm32.whl
-	pip install pytest numpy
 	cd bindings/python/tests; python -m pytest
 shared:
 	mkdir -p build-shared
